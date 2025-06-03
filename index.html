@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <title>Coming Soon</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #1a202c;
+            color: #e2e8f0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+        }
+        h1 {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 0;
+            animation: colorChange 5s infinite alternate;
+        }
+        p {
+            font-size: 1.2em;
+            margin: 10px 0;
+            color: #cbd5e0;
+        }
+        .info-container {
+            position: absolute;
+            bottom: 20px;
+            font-size: 14px;
+            color: #a0aec0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        .copy-btn {
+            background: none;
+            border: none;
+            color: #a3bffa;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+        .copy-btn:hover {
+            color: #fbb6ce;
+        }
+        @keyframes colorChange {
+            0% { color: #cbd5e0; }
+            25% { color: #a3bffa; }
+            50% { color: #fbb6ce; }
+            75% { color: #fbd38d; }
+            100% { color: #cbd5e0; }
+        }
+
+        /* Toast notification styling */
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 2px;
+            padding: 10px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            font-size: 14px;
+        }
+
+        .toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @keyframes fadein {
+            from { bottom: 0; opacity: 0; }
+            to { bottom: 30px; opacity: 1; }
+        }
+
+        @keyframes fadeout {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    </style>
+    <script>
+        async function fetchInfo() {
+            try {
+                const res = await fetch('/ip/info');
+                if (!res.ok) throw new Error('Error loading data');
+                const data = await res.json();
+                document.getElementById('request-id').textContent = data.request_id;
+                document.getElementById('ip-info').textContent = `IP: ${data.ip}`;
+                document.getElementById('user-agent').textContent = `User-Agent: ${data.user_agent}`;
+            } catch (error) {
+                document.getElementById('request-id').textContent = 'error';
+                document.getElementById('ip-info').textContent = '';
+                document.getElementById('user-agent').textContent = '';
+            }
+        }
+
+        function copyToClipboard() {
+            const requestId = document.getElementById('request-id').textContent;
+            navigator.clipboard.writeText(requestId).then(() => {
+                showToast(`Copyed: ${requestId}`);
+            }).catch(err => {
+                showToast('Copy error');
+            });
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.classList.add("show");
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 3000); // Hide after 3 seconds
+        }
+
+        function setCurrentYear() {
+            document.getElementById('year').textContent = `© ${new Date().getFullYear()}`;
+        }
+
+        window.onload = () => {
+            fetchInfo();
+            setCurrentYear();
+        };
+    </script>
+</head>
+<body>
+    <h1>Coming Soon</h1>
+    <p>We're working hard to bring you something amazing. Stay tuned!</p>
+    
+    <div class="info-container">
+        <div>
+            Request ID: <span id="request-id">Loading...</span>
+            <button class="copy-btn" onclick="copyToClipboard()">📋</button>
+        </div>
+        <div id="ip-info">Loading IP...</div>
+        <div id="user-agent">Loading User-Agent...</div>
+        <div id="year"></div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast"></div>
+</body>
+</html>
