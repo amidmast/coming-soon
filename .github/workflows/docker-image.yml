@@ -9,7 +9,7 @@ on:
       - 'index.html'
       - 'nginx.conf'
       - '**.png'
-      - '.github/workflows/docker-publish.yml'
+      - '.github/workflows/docker-image.yml'
 
 jobs:
   build-and-push:
@@ -32,8 +32,12 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/$REPO_OWNER_LC/nginx-coming-soon:latest .
+          docker build -t ghcr.io/$REPO_OWNER_LC/coming-soon:latest .
 
       - name: Push Docker image
         run: |
-          docker push ghcr.io/$REPO_OWNER_LC/nginx-coming-soon:latest
+          docker push ghcr.io/$REPO_OWNER_LC/coming-soon:latest
+
+      - name: Get Docker image
+        run: |
+          docker images
