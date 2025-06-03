@@ -4,12 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'Dockerfile'
-      - 'index.html'
-      - 'nginx.conf'
-      - '**.png'
-      - '.github/workflows/docker-image.yml'
 
 jobs:
   build-and-push:
@@ -23,20 +17,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set lowercase owner as environment variable
-        run: |
-          echo "REPO_OWNER_LC=$(echo ${GITHUB_REPOSITORY_OWNER} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+      - name: Show all ENV
+        run: env
 
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/$REPO_OWNER_LC/coming-soon:latest .
+          docker build -t ghcr.io/{{ github.repository_owner }}/coming-soon:latest .
 
       - name: Push Docker image
         run: |
-          docker push ghcr.io/$REPO_OWNER_LC/coming-soon:latest
+          docker push ghcr.io/{{ github.repository_owner }}/coming-soon:latest
 
       - name: Get Docker image
         run: |
