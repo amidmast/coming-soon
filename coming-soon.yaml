@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coming-soon
+  namespace: default
+  labels:
+    app: coming-soon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coming-soon
+  template:
+    metadata:
+      labels:
+        app: coming-soon
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      containers:
+      - name: coming-soon
+        image: "amidmast/nginx-coming-soon:latest"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "20m"
+            memory: "25Mi"
+          requests:
+            cpu: "5m"
+            memory: "15Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: coming-soon
+  namespace: default
+spec:
+  selector:
+    app: coming-soon
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
