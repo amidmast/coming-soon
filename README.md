@@ -2,6 +2,8 @@
 
 This project provides a lightweight, animated "Coming Soon" page built using HTML, CSS, and JavaScript, served by an NGINX container in a Kubernetes cluster. It’s ideal as a placeholder while your main application is in development or deployment.
 
+**Demo:** [https://amidmast.github.io/coming-soon/](https://amidmast.github.io/coming-soon/)
+
 ## ✨ Features
 
 - Clean and responsive UI with animated header
